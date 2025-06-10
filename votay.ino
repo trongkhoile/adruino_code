@@ -14,16 +14,19 @@ void setup() {
 void loop() {
   int sound = digitalRead(soundSensor); // Đọc trạng thái cảm biến
   unsigned long currentTime = millis();
-
+  
   if (sound == HIGH) {
-    if (currentTime - lastClapTime > 200 && currentTime - lastClapTime < 1000) { 
+    if (clapCount==0){
+      clapCount++;
+    }
+    else if (clapCount!=0 && currentTime - lastClapTime > 200 && currentTime - lastClapTime < 1000) { 
       clapCount++; // Tăng số lần vỗ tay
-      Serial.println("👏 Vỗ tay lần: " + String(clapCount));
+      Serial.println("Vỗ tay lần: " + String(clapCount));
 
-      if (clapCount >= 2) { // Nếu vỗ tay nhiều hơn 2 lần liên tiếp trong < 1 giây
+      if (clapCount == 3) { // Nếu vỗ tay 3 lần liên tiếp trong < 1 giây
         relayState = !relayState; // Đổi trạng thái relay
         digitalWrite(relay, relayState ? HIGH : LOW);
-        Serial.println(relayState ? "💡 Đèn BẬT!" : "🔇 Đèn TẮT!");
+        Serial.println(relayState ? "Đèn BẬT!" : "Đèn TẮT!");
         clapCount = 0; // Reset hoàn toàn sau khi bật/tắt đèn
       }
     } else {
